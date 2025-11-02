@@ -1,5 +1,5 @@
 {
-  "name": "@mattywhitenz/n8n-nodes-openrouter",
+  "name": "n8n-nodes-openroutercached",
   "version": "0.4.0",
   "description": "n8n node for OpenRouter API integration with advanced features: prompt caching, reasoning tokens, tool calling, vision, streaming, and more",
   "keywords": [
@@ -26,13 +26,13 @@
   },
   "main": "index.js",
   "scripts": {
-    "prebuild": "rm -rf dist && echo 'Cleaned dist directory'",
-    "build": "echo 'Starting build...' && npx tsc --project tsconfig.json && echo 'TypeScript compilation complete' && mkdir -p dist/nodes/OpenRouter && echo 'Created directories' && cp nodes/OpenRouter/openrouter.svg dist/nodes/OpenRouter/ && echo 'Copied SVG' && ls -la dist/nodes/OpenRouter/",
+    "build": "tsc",
+    "postbuild": "node -e \"const fs=require('fs');const path=require('path');fs.mkdirSync('dist/nodes/OpenRouter',{recursive:true});fs.copyFileSync('nodes/OpenRouter/openrouter.svg','dist/nodes/OpenRouter/openrouter.svg');fs.copyFileSync('package.json','dist/package.json');\"",
     "dev": "tsc --watch",
     "format": "prettier nodes credentials --write",
     "lint": "eslint ./nodes ./credentials package.json",
     "lintfix": "eslint ./nodes ./credentials package.json --fix",
-    "prepublishOnly": "npm run build && npm run lint",
+    "prepublishOnly": "npm run build && npm run postbuild && npm run lint",
     "test": "jest"
   },
   "files": [
