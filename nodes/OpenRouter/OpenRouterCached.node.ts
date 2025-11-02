@@ -98,23 +98,23 @@ interface IOpenRouterResponse extends IDataObject {
 	}>;
 }
 
-export class OpenRouter implements INodeType {
+export class OpenRouterCached implements INodeType {
 	description: INodeTypeDescription = {
-		displayName: 'OpenRouter',
-		name: 'openRouter',
+		displayName: 'OpenRouter Cached',
+		name: 'openRouterCached',
 		icon: 'file:openrouter.svg',
 		group: ['transform'],
 		version: 1,
 		subtitle: '={{$parameter["operation"]}}',
-		description: 'Interact with OpenRouter API',
+		description: 'Interact with OpenRouter API with advanced caching and reasoning features',
 		defaults: {
-			name: 'OpenRouter',
+			name: 'OpenRouter Cached',
 		},
 		inputs: '={{["main"]}}',
 		outputs: '={{["main"]}}',
 		credentials: [
 			{
-				name: 'openRouterApi',
+				name: 'openRouterCachedApi',
 				required: true,
 			},
 		],
@@ -491,7 +491,7 @@ export class OpenRouter implements INodeType {
 	methods = {
 		loadOptions: {
 			async getModels(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
-				const credentials = await this.getCredentials('openRouterApi');
+				const credentials = await this.getCredentials('openRouterCachedApi');
 				const options: IRequestOptions = {
 					url: 'https://openrouter.ai/api/v1/models',
 					headers: {
@@ -557,7 +557,7 @@ export class OpenRouter implements INodeType {
 		const items = this.getInputData();
 		const returnData: INodeExecutionData[] = [];
 
-		const credentials = await this.getCredentials('openRouterApi');
+		const credentials = await this.getCredentials('openRouterCachedApi');
 		if (!credentials?.apiKey) {
 			throw new NodeOperationError(this.getNode(), 'No valid API key provided');
 		}

@@ -1,12 +1,12 @@
-const { OpenRouterNode } = require('./dist/nodes/OpenRouterNode/OpenRouterNode.node');
-const { OpenRouterApi } = require('./dist/credentials/OpenRouterApi.credentials');
+const { OpenRouterCached } = require('./dist/nodes/OpenRouter/OpenRouterCached.node');
+const { OpenRouterCachedApi } = require('./dist/credentials/OpenRouterCachedApi.credentials');
 
 module.exports = {
     nodes: [
-        OpenRouterNode
+        OpenRouterCached
     ],
     credentials: [
-        OpenRouterApi
+        OpenRouterCachedApi
     ],
     version: require('./package.json').version,
 };

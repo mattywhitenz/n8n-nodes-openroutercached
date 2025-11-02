@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-openroutercached",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "n8n node for OpenRouter API integration with advanced features: prompt caching, reasoning tokens, tool calling, vision, streaming, and more",
   "keywords": [
     "n8n-community-node-package",
@@ -42,10 +42,10 @@
   "n8n": {
     "n8nNodesApiVersion": 1,
     "credentials": [
-      "dist/credentials/OpenRouterApi.credentials.js"
+      "dist/credentials/OpenRouterCachedApi.credentials.js"
     ],
     "nodes": [
-      "dist/nodes/OpenRouter/OpenRouter.node.js"
+      "dist/nodes/OpenRouter/OpenRouterCached.node.js"
     ]
   },
   "devDependencies": {
