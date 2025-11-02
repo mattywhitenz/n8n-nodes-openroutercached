@@ -402,28 +402,6 @@ export class OpenRouterCached implements INodeType {
 				description: 'Whether to stream the response back in real-time (SSE)',
 			},
 			{
-				displayName: 'Tools / Function Calling',
-				name: 'tools',
-				type: 'json',
-				default: '[]',
-				description: 'Array of tools/functions the model can call. Format: [{"type": "function", "function": {"name": "get_weather", "description": "...", "parameters": {...}}}].',
-				placeholder: '[{"type": "function", "function": {"name": "my_function", ...}}]',
-			},
-			{
-				displayName: 'Tool Choice',
-				name: 'tool_choice',
-				type: 'string',
-				default: 'auto',
-				description: 'Controls which tool is called: "none", "auto", "required", or specific function name',
-			},
-			{
-				displayName: 'Parallel Tool Calls',
-				name: 'parallel_tool_calls',
-				type: 'boolean',
-				default: true,
-				description: 'Whether to enable parallel function calling',
-			},
-			{
 				displayName: 'Provider Routing',
 				name: 'providerRouting',
 				type: 'fixedCollection',
@@ -576,9 +554,6 @@ export class OpenRouterCached implements INodeType {
 				const promptCaching = this.getNodeParameter('promptCaching', i, {}) as IDataObject;
 				const reasoning = this.getNodeParameter('reasoning', i, {}) as IDataObject;
 				const stream = this.getNodeParameter('stream', i, false) as boolean;
-				const toolsRaw = this.getNodeParameter('tools', i, '[]') as string;
-				const toolChoice = this.getNodeParameter('tool_choice', i, 'auto') as string;
-				const parallelToolCalls = this.getNodeParameter('parallel_tool_calls', i, true) as boolean;
 				const providerRouting = this.getNodeParameter('providerRouting', i, {}) as IDataObject;
 				const imagesRaw = this.getNodeParameter('images', i, '[]') as string;
 
@@ -751,22 +726,6 @@ export class OpenRouterCached implements INodeType {
 						requestBody.stream = true;
 					}
 
-					// Add tools
-					try {
-						const tools = JSON.parse(toolsRaw);
-						if (Array.isArray(tools) && tools.length > 0) {
-							requestBody.tools = tools;
-
-							if (toolChoice && toolChoice !== 'auto') {
-								requestBody.tool_choice = toolChoice;
-							}
-
-							requestBody.parallel_tool_calls = parallelToolCalls;
-						}
-					} catch (error) {
-						// Ignore tool parsing errors
-					}
-
 					// Add provider routing
 					const routingConfig = (providerRouting as any)?.routing || {};
 					if (routingConfig.route) {
@@ -814,7 +773,6 @@ export class OpenRouterCached implements INodeType {
 						// Parse SSE response
 						let fullContent = '';
 						let fullReasoning = '';
-						let toolCalls: any[] = [];
 						let finishReason = '';
 						let usage: any = {};
 						let responseModel = model;
@@ -834,9 +792,6 @@ export class OpenRouterCached implements INodeType {
 									}
 									if (delta?.reasoning) {
 										fullReasoning += delta.reasoning;
-									}
-									if (delta?.tool_calls) {
-										toolCalls = delta.tool_calls;
 									}
 									if (chunk.choices?.[0]?.finish_reason) {
 										finishReason = chunk.choices[0].finish_reason;
@@ -863,9 +818,6 @@ export class OpenRouterCached implements INodeType {
 
 						if (fullReasoning) {
 							result.reasoning = fullReasoning;
-						}
-						if (toolCalls.length > 0) {
-							result.tool_calls = toolCalls;
 						}
 
 						returnData.push({
@@ -899,11 +851,6 @@ export class OpenRouterCached implements INodeType {
 						}
 						if (choice.message.reasoning_details) {
 							result.reasoning_details = choice.message.reasoning_details;
-						}
-
-						// Add tool calls if present
-						if (choice.message.tool_calls) {
-							result.tool_calls = choice.message.tool_calls;
 						}
 
 						// Add cache discount if present

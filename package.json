@@ -1,7 +1,7 @@
 {
   "name": "n8n-nodes-openroutercached",
-  "version": "0.4.2",
-  "description": "n8n node for OpenRouter API integration with advanced features: prompt caching, reasoning tokens, tool calling, vision, streaming, and more",
+  "version": "0.4.3",
+  "description": "n8n node for OpenRouter API integration with advanced features: prompt caching, reasoning tokens, vision, streaming, and more",
   "keywords": [
     "n8n-community-node-package",
     "n8n",
@@ -10,7 +10,6 @@
     "llm",
     "prompt-caching",
     "reasoning-tokens",
-    "function-calling",
     "vision",
     "multimodal"
   ],
